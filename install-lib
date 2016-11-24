@@ -1,5 +1,19 @@
 #!/bin/bash
 
+download_external_repositories() {
+
+    if [[ -z ${external_repositories} ]]; then
+        echo "Variabe external_repositories not declared!"
+        exit 1
+    fi
+
+    for ext_repo in ${external_repositories[@]}; do
+        repo_basename=${ext_repo##*/}
+        repo_basename=${repo_basename%.*}
+        [[ ! -d ${repo_basename} ]] && git clone ${ext_repo}
+    done
+}
+
 create_symlink() {
 
     if [[ -z ${install_files} ]]; then
