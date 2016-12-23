@@ -21,6 +21,11 @@ create_symlink() {
         exit 1
     fi
 
+    symlink_flag="-s"
+    if [[ "${1}" = "hardlink" ]]; then
+        symlink_flag=""
+    fi
+
     for target in ${install_files[@]}; do
         KEY=${target%%:*}
         VALUE=${target##*:}
@@ -36,7 +41,7 @@ create_symlink() {
         if [ -z "$cur_source" ]; then
             echo -e "\tCreating symlink"
             mkdir -p $(dirname "$KEY")
-            ln -s "$VALUE" "$KEY"
+            ln ${symlink_flag} "$VALUE" "$KEY"
         elif [ "$cur_source" != "$VALUE" ]; then
             echo -e "\tThere's already a file in the way at $KEY"
             if [ -L $KEY ]; then
@@ -54,7 +59,7 @@ create_symlink() {
                         rm $KEY
                     fi
                     echo -e "\tCreating symlink"
-                    ln -s "$VALUE" "$KEY"
+                    ln ${symlink_flag} "$VALUE" "$KEY"
                     ;;
                 'n')
                     echo -e "\tDoing nothing to it then... suit your self"
